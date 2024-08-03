@@ -7,12 +7,17 @@ import NumberInputQuestion from "@/components/NumberInputQuestion";
 import YesNoQuestion from "@/components/YesNoQuestion";
 import questions from "@/data/Questions";
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 export default function AssesmentPage() {
   const router = useRouter()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   const handleAnswer = async (answer: Answer) => {
+    const body = document.querySelector('body');
     const newAnswers = [...answers, answer];
     setAnswers(newAnswers);
 
@@ -29,7 +34,15 @@ export default function AssesmentPage() {
         body: JSON.stringify({ id, data: newAnswers }),
       });
 
+      body?.classList.add('page-transition')
+
+      await sleep(500);
+
       router.push(`/result?id=${id}`);
+
+      await sleep(500);
+
+      body?.classList.remove('page-transition');
     }
   };
 

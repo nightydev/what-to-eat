@@ -1,8 +1,12 @@
 'use client';
+import TransitionLink from '@/components/TransitionLink';
 import { Answer } from '@/types/types';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 export default function ResultPage() {
   const searchParams = useSearchParams();
@@ -21,12 +25,24 @@ export default function ResultPage() {
 
     const loadPage = async () => {
       if (id) {
-        await Promise.all([fetchData(), delay(2000)]);
+        await Promise.all([fetchData(), delay(3000)]);
+
+        const body = document.querySelector('body');
+
+        body?.classList.add('page-transition')
+
+        await sleep(500);
+
         setLoading(false);
+
+        await sleep(500);
+
+        body?.classList.remove('page-transition');
       }
     };
 
     loadPage();
+
   }, [id]);
 
   return (
@@ -38,9 +54,11 @@ export default function ResultPage() {
           </div>
         </div>
       ) : (
-        <div>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
           Hola pepe
-          <Link href={'/'}>Reintentar</Link>
+          <TransitionLink href='/'>
+            <button className="inline-block bg-green-600 text-white font-semibold py-3 px-5 rounded hover:bg-green-700 transition duration-300">Reintentar</button>
+          </TransitionLink>
         </div>
       )}
     </>

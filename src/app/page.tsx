@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TransitionLink from "@/components/TransitionLink";
 
 export default function HomePage() {
   return (
@@ -9,9 +9,11 @@ export default function HomePage() {
           ¿Quieres cambiar tu alimentación y no sabes cómo empezar?<br /> <b>What to eat?</b> es la herramienta que te ayudará a obtener la dieta perfecta para ti. El mejor momento para empezar fue ayer, el segundo mejor momento es ahora. ¡Da el primer paso hacia tu cambio hoy!
         </p>
         <div className="text-center">
-          <Link href="/assessment" className="inline-block bg-green-600 text-white font-semibold py-3 px-5 rounded hover:bg-green-700 transition duration-300">
-            Empezar
-          </Link>
+          <TransitionLink href="/assessment">
+            <button className="inline-block bg-green-600 text-white font-semibold py-3 px-5 rounded hover:bg-green-700 transition duration-300">
+              Empezar
+            </button>
+          </TransitionLink>
         </div>
       </div>
     </main>
