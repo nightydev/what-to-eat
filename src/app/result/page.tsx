@@ -1,9 +1,9 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import TransitionLink from '@/components/TransitionLink';
 import { Answer } from '@/types/types';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { createMealPlan } from '@/data/mealPlanner';
 
 let TMB = 0;
@@ -63,7 +63,7 @@ function motor(answers: Answer[]) {
   return plan;
 }
 
-export default function ResultPage() {
+function ResultContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const [answers, setAnswers] = useState<Answer[] | null>(null);
@@ -100,45 +100,52 @@ export default function ResultPage() {
 
   }, [id]);
 
-  return (
-    <>
-      {loading ? (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-          <div className="max-w-2xl p-8">
-            <h1 className="text-6xl font-bold text-center text-gray-700 mb-4">Creando tu dieta...</h1>
-          </div>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+        <div className="max-w-2xl p-8">
+          <h1 className="text-6xl font-bold text-center text-gray-700 mb-4">Creando tu dieta...</h1>
         </div>
-      ) : (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-green-600 p-6 text-gray-900">
-          <div className="bg-white shadow-md rounded-lg p-8 max-w-2xl w-full">
-            <p className="text-lg font-semibold mb-6">
-              Necesitas consumir <span className="text-green-700">{TMB}</span> calorías. A continuación te proporciono una dieta que se adecua a tus características:
-            </p>
-            <div className="max-h-96 overflow-y-auto space-y-4">
-              {motor(answers as Answer[]).map((meal, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                  <p className="text-lg font-bold mb-2">
-                    {meal.meal} <span className="text-green-600">({meal.totalCalories} calorías)</span>
-                  </p>
-                  <ul className="list-disc list-inside space-y-1">
-                    {meal.items.map((food, index) => (
-                      <li key={index} className="text-gray-700">{food.name} <span className="text-gray-500">({food.caloriesPerServing} calorías)</span></li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-center">
-              <TransitionLink href='/'>
-                <button className="bg-green-600 text-white font-semibold py-3 px-5 rounded-full hover:bg-green-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500">
-                  Regresar
-                </button>
-              </TransitionLink>
-            </div>
-          </div>
-        </div>
+      </div>
+    );
+  }
 
-      )}
-    </>
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-green-600 p-6 text-gray-900">
+      <div className="bg-white shadow-md rounded-lg p-8 max-w-2xl w-full">
+        <p className="text-lg font-semibold mb-6">
+          Necesitas consumir <span className="text-green-700">{TMB}</span> calorías. A continuación te proporciono una dieta que se adecua a tus características:
+        </p>
+        <div className="max-h-96 overflow-y-auto space-y-4">
+          {motor(answers as Answer[]).map((meal, index) => (
+            <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm">
+              <p className="text-lg font-bold mb-2">
+                {meal.meal} <span className="text-green-600">({meal.totalCalories} calorías)</span>
+              </p>
+              <ul className="list-disc list-inside space-y-1">
+                {meal.items.map((food, index) => (
+                  <li key={index} className="text-gray-700">{food.name} <span className="text-gray-500">({food.caloriesPerServing} calorías)</span></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 flex justify-center">
+          <TransitionLink href='/'>
+            <button className="bg-green-600 text-white font-semibold py-3 px-5 rounded-full hover:bg-green-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500">
+              Regresar
+            </button>
+          </TransitionLink>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ResultPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResultContent />
+    </Suspense>
   );
 }
