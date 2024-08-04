@@ -1,7 +1,7 @@
 import { filterFoods } from './foodFilter';
 import { Answer, FoodItem, Meal } from '@/types/types';
 
-export function createMealPlan(answers: Answer[], totalCalories: number): Meal[] {
+export function createMealPlan(answers: Answer[], totalCalories: number) {
   const mealsCount = parseInt(answers[6] as string);
   const caloriesPerMeal = totalCalories / mealsCount;
   const suitableFoods = filterFoods(answers);

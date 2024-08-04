@@ -6,61 +6,8 @@ import { Answer } from '@/types/types';
 import { useEffect, useState, Suspense } from 'react';
 import { createMealPlan } from '@/data/mealPlanner';
 
-let TMB = 0;
-
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function motor(answers: Answer[]) {
-  switch (answers[1]) {
-    case 'Femenino':
-      TMB = parseFloat((447.6 + (9.2 * (answers[4] as number)) + (3.1 * ((answers[3] as number) / 100)) - (4.3 * (answers[2] as number))).toFixed(0));
-      break;
-
-    case 'Masculino':
-      TMB = parseFloat((88.36 + (13.4 * (answers[4] as number)) + (4.8 * ((answers[3] as number) / 100)) - (5.7 * (answers[2] as number))).toFixed(0));
-      break;
-  }
-
-  switch (answers[5]) {
-    case 'No realizo':
-      TMB = parseFloat((TMB * 1.2).toFixed(0));
-      break;
-
-    case '1 a 2 veces':
-      TMB = parseFloat((TMB * 1.37).toFixed(0));
-      break;
-
-    case '3 a 4 veces':
-      TMB = parseFloat((TMB * 1.55).toFixed(0));
-      break;
-
-    case '5 a 6 veces':
-      TMB = parseFloat((TMB * 1.72).toFixed(0));
-      break;
-
-    case 'Toda la semana':
-      TMB = parseFloat((TMB * 1.9).toFixed(0));
-      break;
-  }
-
-  switch (answers[0]) {
-    case 'Perder peso':
-      TMB = TMB - 500;
-      break;
-
-    case 'Ganar masa muscular':
-      TMB = TMB + 500;
-      break;
-
-    case 'Mantener el peso':
-      break;
-  }
-
-  const plan = createMealPlan(answers, TMB);
-
-  return plan;
 }
 
 function ResultContent() {
@@ -68,6 +15,59 @@ function ResultContent() {
   const id = searchParams.get('id');
   const [answers, setAnswers] = useState<Answer[] | null>(null);
   const [loading, setLoading] = useState(true);
+
+  let TMB = 0;
+
+  function motor(answers: Answer[]) {
+    switch (answers[1]) {
+      case 'Femenino':
+        TMB = parseFloat((447.6 + (9.2 * (answers[4] as number)) + (3.1 * ((answers[3] as number) / 100)) - (4.3 * (answers[2] as number))).toFixed(0));
+        break;
+
+      case 'Masculino':
+        TMB = parseFloat((88.36 + (13.4 * (answers[4] as number)) + (4.8 * ((answers[3] as number) / 100)) - (5.7 * (answers[2] as number))).toFixed(0));
+        break;
+    }
+
+    switch (answers[5]) {
+      case 'No realizo':
+        TMB = parseFloat((TMB * 1.2).toFixed(0));
+        break;
+
+      case '1 a 2 veces':
+        TMB = parseFloat((TMB * 1.37).toFixed(0));
+        break;
+
+      case '3 a 4 veces':
+        TMB = parseFloat((TMB * 1.55).toFixed(0));
+        break;
+
+      case '5 a 6 veces':
+        TMB = parseFloat((TMB * 1.72).toFixed(0));
+        break;
+
+      case 'Toda la semana':
+        TMB = parseFloat((TMB * 1.9).toFixed(0));
+        break;
+    }
+
+    switch (answers[0]) {
+      case 'Perder peso':
+        TMB = TMB - 500;
+        break;
+
+      case 'Ganar masa muscular':
+        TMB = TMB + 500;
+        break;
+
+      case 'Mantener el peso':
+        break;
+    }
+
+    const plan = createMealPlan(answers, TMB);
+
+    return plan;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,7 +114,7 @@ function ResultContent() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-green-600 p-6 text-gray-900">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-2xl w-full">
         <p className="text-lg font-semibold mb-6">
-          A continuación te proporciono una dieta que se adecua a tus características:
+          A continuación te proporciono una dieta que cumple con las calorías adecuadas a tus características:
         </p>
         <div className="max-h-96 overflow-y-auto space-y-4">
           {motor(answers as Answer[]).map((meal, index) => (
