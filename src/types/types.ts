@@ -27,3 +27,18 @@ export interface NumberInputQuestionProps {
 }
 
 export type Answer = boolean | string | number;
+
+export interface FoodItem {
+  name: string;
+  caloriesPerServing: number;
+  servings: number;
+  vegan: boolean;
+  lactoseFree: boolean;
+  nutFree: boolean;
+}
+
+export interface Meal {
+  meal: string;
+  items: FoodItem[];
+  totalCalories: number;
+}
