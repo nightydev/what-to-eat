@@ -113,9 +113,6 @@ function ResultContent() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-green-600 p-6 text-gray-900">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-2xl w-full">
-        <p className="text-lg font-semibold mb-6">
-          A continuación te proporciono una dieta que cumple con las calorías adecuadas a tus características:
-        </p>
         <div className="max-h-96 overflow-y-auto space-y-4">
           {motor(answers as Answer[]).map((meal, index) => (
             <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm">
